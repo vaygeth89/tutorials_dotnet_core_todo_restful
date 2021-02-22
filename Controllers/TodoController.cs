@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApp.Models;
+using TodoApp.Models.APIs;
 
 namespace TodoApp.Controllers
 {
@@ -32,12 +33,16 @@ namespace TodoApp.Controllers
             }
         }
 
-        [Route("")]
-        [HttpPost]
-        public async Task<ActionResult<Todo>> AddTodo(Todo todo)
+        [HttpPost("")]
+        public async Task<ActionResult<Todo>> AddTodo(NewTodo newTodo)
         {
             try
             {
+                var todo = new Todo()
+                {
+                    name = newTodo.name,
+                    IsCompleted = newTodo.isCompleted
+                };
                 await _dbContext.Todos.AddAsync(todo);
                 int todoId = await _dbContext.SaveChangesAsync();
                 return Ok(todo);
